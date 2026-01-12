@@ -46,6 +46,7 @@ public:
 	void UpdatePotentials();
 	void UpdatePairPotential(int idx1, int idx2);
 	void ComputeForces();
+	void ComputeForcesCPU();
 	void Integrate(double dt);
 	void Equilibrate(int steps, double dt, string dcd_file, int save_freq);
 

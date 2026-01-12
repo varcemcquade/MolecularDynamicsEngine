@@ -1,35 +1,16 @@
 #pragma once
-#include <vector>
-
-using namespace std;
+#include <cuda_runtime.h>
 
 template <class T>
 class Matrix {
 private:
-	int rows;
-	int cols;
-	vector<T> data;
+    int rows;
+    int cols;
+    T* data;
 public:
-	Matrix();
-	Matrix(int m_rows, int m_cols);
-	~Matrix();
-
-	T& operator()(int i);
-	T& operator()(int i, int j);
+    Matrix(int m_rows, int m_cols) : rows(m_rows), cols(m_cols) { cudaMallocManaged(&data, m_rows * m_cols * sizeof(T)); }
+    ~Matrix() { cudaFree(data); }
+    T& operator()(int i) { return data[i]; }
+    T& operator()(int i, int j) { return data[i * cols + j]; }
+    T* data_ptr() { return data; }
 };
-
-
-template <class T>
-Matrix<T>::Matrix() : rows(0), cols(0) {};
-
-template <class T>
-Matrix<T>::Matrix(int m_rows, int m_cols) : rows(m_rows), cols(m_cols), data(m_rows* m_cols) {};
-
-template <class T>
-Matrix<T>::~Matrix() {};
-
-template <class T>
-T& Matrix<T>::operator()(int i) { return data[i]; }
-
-template <class T>
-T& Matrix<T>::operator()(int i, int j) { return data[i * cols + j]; }

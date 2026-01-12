@@ -1,6 +1,6 @@
 #include "Box.h"
 
-const int Box::ATOM_COUNT = 64;
+const int Box::ATOM_COUNT = 1000;
 const int Box::DIMENSION = 3;
 const float Box::TEMPERATURE = 94.4f; // K
 const double Box::KB = 1.380649 * 1e-23; // J/K or (m^2*kg)/(s^2*K)
@@ -132,7 +132,7 @@ void Box::UpdatePairPotential(int idx1, int idx2) {
 	(*potentials)(idx1, idx2) = 4 * Box::EPSILON_ANGSTROMS * (pow((Box::SIGMA / r), 12) - pow((Box::SIGMA / r), 6)); // (kg*A^2)/s^2
 }
 
-void Box::ComputeForces() {
+void Box::ComputeForcesCPU() {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		(*forces)(i, 0) = 0;
 		(*forces)(i, 1) = 0;
@@ -166,6 +166,18 @@ void Box::ComputeForces() {
 	}
 }
 
+extern "C" void ComputeForcesGPU(double* coordinates, double* forces, int n, double epsilon, double sigma);
+
+void Box::ComputeForces() {
+	if (Box::ATOM_COUNT > 999) {
+		ComputeForcesGPU(coordinates->data_ptr(), forces->data_ptr(), Box::ATOM_COUNT, Box::EPSILON_ANGSTROMS, Box::SIGMA);
+	}
+	else {
+		cout << "Initializing CPU.\n";
+		ComputeForcesCPU();
+	}
+}
+
 void Box::Integrate(double dt) {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int d = 0; d < Box::DIMENSION; ++d) {
@@ -191,6 +203,9 @@ void Box::Equilibrate(int steps, double dt, string dcd_file, int save_freq) {
 
 	for (int i = 0; i < steps; ++i) {
 		Integrate(dt);
+		if (i % 1000 == 0) {
+			cout << "Step: " << i << " completed.\n";
+		}
 		if (i % save_freq == 0) {
 			AppendDCDFrame(dcd_file);
 		}
