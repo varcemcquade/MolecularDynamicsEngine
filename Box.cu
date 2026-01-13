@@ -62,6 +62,6 @@ void ComputeForcesKernel(double* coords, double* forces, int n, double epsilon, 
 extern "C" void ComputeForcesGPU(double* coordinates, double* forces, int n, double epsilon, double sigma) {
     int threads = 256;
     int blocks = (n + threads - 1) / threads;
-    ComputeForcesKernel <<<blocks, threads>>> (coordinates, forces, n, epsilon, sigma);
+    ComputeForcesKernel<<<blocks, threads>>> (coordinates, forces, n, epsilon, sigma);
     cudaDeviceSynchronize();
 }

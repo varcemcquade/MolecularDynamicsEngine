@@ -1,40 +1,24 @@
 #include "Box.h"
 
-const int Box::ATOM_COUNT = 1000;
-const int Box::DIMENSION = 3;
-const float Box::TEMPERATURE = 94.4f; // K
-const double Box::KB = 1.380649 * 1e-23; // J/K or (m^2*kg)/(s^2*K)
-const double Box::RHO = 1.374 * 1e-3; // kg/cm^3
-const double Box::SIGMA = 3.4f; // Angstroms
-const double Box::EPSILSON = 120 * Box::KB; // J or (m^2*kg)/s^2
-const double Box::EPSILON_ANGSTROMS = Box::EPSILSON * 1e20; // (A^2*kg)/s^2
-const double Box::CUTOFF_RANGE = 2.25 * Box::SIGMA;
-const double Box::ATOM_MASS = 39.95 * 1.6747e-24 * 1e-3; // kg
-const double Box::BOX_LENGTH = cbrt(Box::ATOM_COUNT * Box::ATOM_MASS / Box::RHO) * 1e8; // Angstroms
+const double Box::BOX_LENGTH = cbrt(Box::ATOM_COUNT * Box::ATOM_MASS / Box::RHO) * 1e8;
 
-Box::Box() {
-	names = new Matrix<string>(Box::ATOM_COUNT, 1);
-	coordinates = new Matrix<double>(Box::ATOM_COUNT, Box::DIMENSION);
-	velocities = new Matrix<double>(Box::ATOM_COUNT, Box::DIMENSION);
-	potentials = new Matrix<double>(Box::ATOM_COUNT, Box::ATOM_COUNT);
-	forces = new Matrix<double>(Box::ATOM_COUNT, Box::DIMENSION);
+Box::Box() :
+	coordinates(Matrix<double>(Box::ATOM_COUNT, Box::DIMENSION)), 
+	velocities(Matrix<double>(Box::ATOM_COUNT, Box::DIMENSION)), 
+	potentials(Matrix<double>(Box::ATOM_COUNT, Box::ATOM_COUNT)), 
+	forces(Matrix<double>(Box::ATOM_COUNT, Box::DIMENSION)) {
+	InitializeNames();
 	InitializeCoordinates();
 	InitializeVelocities();
 	UpdatePotentials();
 	ComputeForces();
 }
 
-Box::~Box() {
-	delete names;
-	delete coordinates;
-	delete velocities;
-	delete potentials;
-	delete forces;
-}
+Box::~Box() {}
 
 void Box::InitializeNames() {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
-		(*names)(i) = "Ar";
+		names[i] = "Ar";
 	}
 }
 
@@ -46,9 +30,9 @@ void Box::InitializeCoordinates() {
 	for (int x = 0; x < atoms_per_side && idx < ATOM_COUNT; ++x) {
 		for (int y = 0; y < atoms_per_side && idx < ATOM_COUNT; ++y) {
 			for (int z = 0; z < atoms_per_side && idx < ATOM_COUNT; ++z) {
-				(*coordinates)(idx, 0) = (x + 0.5) * spacing;
-				(*coordinates)(idx, 1) = (y + 0.5) * spacing;
-				(*coordinates)(idx, 2) = (z + 0.5) * spacing;
+				coordinates(idx, 0) = (x + 0.5) * spacing;
+				coordinates(idx, 1) = (y + 0.5) * spacing;
+				coordinates(idx, 2) = (z + 0.5) * spacing;
 				++idx;
 			}
 		}
@@ -63,8 +47,8 @@ void Box::InitializeVelocities() {
 	normal_distribution<double> dist(mean, stdv);
 
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
-		for (int j = 0; j < Box::DIMENSION; ++j) {
-			(*velocities)(i, j) = dist(generator) * 1e10;
+		for (int d = 0; d < Box::DIMENSION; ++d) {
+			velocities(i, d) = dist(generator) * 1e10;
 		}
 	}
 }
@@ -72,13 +56,13 @@ void Box::InitializeVelocities() {
 void Box::ReflectBoundaryCondition() {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int d = 0; d < Box::DIMENSION; ++d) {
-			if ((*coordinates)(i, d) < 0) {
-				(*coordinates)(i, d) = -(*coordinates)(i, d);
-				(*velocities)(i, d) *= -1;
+			if (coordinates(i, d) < 0) {
+				coordinates(i, d) = -coordinates(i, d);
+				velocities(i, d) *= -1;
 			}
-			else if ((*coordinates)(i, d) > Box::BOX_LENGTH) {
-				(*coordinates)(i, d) = 2 * Box::BOX_LENGTH - (*coordinates)(i, d);
-				(*velocities)(i, d) *= -1;
+			else if (coordinates(i, d) > Box::BOX_LENGTH) {
+				coordinates(i, d) = 2 * Box::BOX_LENGTH - coordinates(i, d);
+				velocities(i, d) *= -1;
 			}
 		}
 	}
@@ -87,7 +71,7 @@ void Box::ReflectBoundaryCondition() {
 void Box::DisplayCoordinates() const {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int j = 0; j < Box::DIMENSION; ++j) {
-			cout << (*coordinates)(i, j) << " ";
+			cout << coordinates(i, j) << " ";
 		}
 		cout << endl;
 	}
@@ -96,7 +80,7 @@ void Box::DisplayCoordinates() const {
 void Box::DisplayVelocities() const {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int j = 0; j < Box::DIMENSION; ++j) {
-			cout << (*velocities)(i, j) << " ";
+			cout << velocities(i, j) << " ";
 		}
 		cout << endl;
 	}
@@ -105,7 +89,7 @@ void Box::DisplayVelocities() const {
 void Box::DisplayPotentials() const {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int j = 0; j < Box::ATOM_COUNT; ++j) {
-			cout << (*potentials)(i, j) << " ";
+			cout << potentials(i, j) << " ";
 		}
 		cout << endl;
 	}
@@ -120,34 +104,34 @@ void Box::UpdatePotentials() {
 }
 
 void Box::UpdatePairPotential(int idx1, int idx2) {
-	double x1 = (*coordinates)(idx1, 0);
-	double y1 = (*coordinates)(idx1, 1);
-	double z1 = (*coordinates)(idx1, 2);
+	double x1 = coordinates(idx1, 0);
+	double y1 = coordinates(idx1, 1);
+	double z1 = coordinates(idx1, 2);
 
-	double x2 = (*coordinates)(idx2, 0);
-	double y2 = (*coordinates)(idx2, 1);
-	double z2 = (*coordinates)(idx2, 2);
+	double x2 = coordinates(idx2, 0);
+	double y2 = coordinates(idx2, 1);
+	double z2 = coordinates(idx2, 2);
 
 	double r = sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2) + pow((z1 - z2), 2)); // Angstroms
-	(*potentials)(idx1, idx2) = 4 * Box::EPSILON_ANGSTROMS * (pow((Box::SIGMA / r), 12) - pow((Box::SIGMA / r), 6)); // (kg*A^2)/s^2
+	potentials(idx1, idx2) = 4 * Box::EPSILON_ANGSTROMS * (pow((Box::SIGMA / r), 12) - pow((Box::SIGMA / r), 6)); // (kg*A^2)/s^2
 }
 
 void Box::ComputeForcesCPU() {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
-		(*forces)(i, 0) = 0;
-		(*forces)(i, 1) = 0;
-		(*forces)(i, 2) = 0;
+		forces(i, 0) = 0;
+		forces(i, 1) = 0;
+		forces(i, 2) = 0;
 	}
 
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
-		double xi = (*coordinates)(i, 0);
-		double yi = (*coordinates)(i, 1);
-		double zi = (*coordinates)(i, 2);
+		double xi = coordinates(i, 0);
+		double yi = coordinates(i, 1);
+		double zi = coordinates(i, 2);
 
 		for (int j = i + 1; j < Box::ATOM_COUNT; ++j) {
-			double dx = xi - (*coordinates)(j, 0);
-			double dy = yi - (*coordinates)(j, 1);
-			double dz = zi - (*coordinates)(j, 2);
+			double dx = xi - coordinates(j, 0);
+			double dy = yi - coordinates(j, 1);
+			double dz = zi - coordinates(j, 2);
 
 			double r2 = dx * dx + dy * dy + dz * dz;
 			double r = sqrt(r2);
@@ -155,13 +139,13 @@ void Box::ComputeForcesCPU() {
 			double u = ((6 * pow(Box::SIGMA, 6)) / pow(r, 8)) - ((12 * pow(Box::SIGMA, 12)) / pow(r, 14)); // Angstroms^-2
 			double scalar_f = -4 * Box::EPSILON_ANGSTROMS * u;
 
-			(*forces)(i, 0) += scalar_f * dx;
-			(*forces)(i, 1) += scalar_f * dy;
-			(*forces)(i, 2) += scalar_f * dz;
+			forces(i, 0) += scalar_f * dx;
+			forces(i, 1) += scalar_f * dy;
+			forces(i, 2) += scalar_f * dz;
 
-			(*forces)(j, 0) += -scalar_f * dx;
-			(*forces)(j, 1) += -scalar_f * dy;
-			(*forces)(j, 2) += -scalar_f * dz;
+			forces(j, 0) += -scalar_f * dx;
+			forces(j, 1) += -scalar_f * dy;
+			forces(j, 2) += -scalar_f * dz;
 		}
 	}
 }
@@ -170,7 +154,7 @@ extern "C" void ComputeForcesGPU(double* coordinates, double* forces, int n, dou
 
 void Box::ComputeForces() {
 	if (Box::ATOM_COUNT > 999) {
-		ComputeForcesGPU(coordinates->data_ptr(), forces->data_ptr(), Box::ATOM_COUNT, Box::EPSILON_ANGSTROMS, Box::SIGMA);
+		ComputeForcesGPU(coordinates.data_ptr(), forces.data_ptr(), Box::ATOM_COUNT, Box::EPSILON_ANGSTROMS, Box::SIGMA);
 	}
 	else {
 		cout << "Initializing CPU.\n";
@@ -181,9 +165,9 @@ void Box::ComputeForces() {
 void Box::Integrate(double dt) {
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int d = 0; d < Box::DIMENSION; ++d) {
-			double a = (*forces)(i, d) / Box::ATOM_MASS; // Angstroms/s^2
-			(*coordinates)(i, d) = (*coordinates)(i, d) + (*velocities)(i, d) * dt + 0.5 * a * dt * dt;
-			(*velocities)(i, d) = (*velocities)(i, d) + 0.5 * a * dt;
+			double a = forces(i, d) / Box::ATOM_MASS; // Angstroms/s^2
+			coordinates(i, d) = coordinates(i, d) + velocities(i, d) * dt + 0.5 * a * dt * dt;
+			velocities(i, d) = velocities(i, d) + 0.5 * a * dt;
 		}
 	}
 
@@ -192,8 +176,8 @@ void Box::Integrate(double dt) {
 
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int d = 0; d < Box::DIMENSION; ++d) {
-			double a = (*forces)(i, d) / Box::ATOM_MASS; // Angstroms/s^2
-			(*velocities)(i, d) = (*velocities)(i, d) + 0.5 * a * dt;
+			double a = forces(i, d) / Box::ATOM_MASS; // Angstroms/s^2
+			velocities(i, d) = velocities(i, d) + 0.5 * a * dt;
 		}
 	}
 }
@@ -221,9 +205,9 @@ void Box::WritePDB(string file_name) const {
 		fout << setw(4) << left << "Ar";
 		fout << "HET ";
 		fout << setw(5) << right << (i + 1);
-		fout << setw(12) << right << fixed << setprecision(3) << (*coordinates)(i, 0);
-		fout << setw(8) << right << fixed << setprecision(3) << (*coordinates)(i, 1);
-		fout << setw(8) << right << fixed << setprecision(3) << (*coordinates)(i, 2);
+		fout << setw(12) << right << fixed << setprecision(3) << coordinates(i, 0);
+		fout << setw(8) << right << fixed << setprecision(3) << coordinates(i, 1);
+		fout << setw(8) << right << fixed << setprecision(3) << coordinates(i, 2);
 		fout << setw(6) << right << fixed << setprecision(2) << 1.00;
 		fout << setw(6) << right << fixed << setprecision(2) << 0.00;
 		fout << setw(12) << right << "HETA";
@@ -298,21 +282,21 @@ void Box::AppendDCDFrame(string file_name) {
 
 	fout.write((char*)&block_size, 4);
 	for (int i = 0; i < ATOM_COUNT; ++i) {
-		float x = (float)(*coordinates)(i, 0);
+		float x = (float)coordinates(i, 0);
 		fout.write((char*)&x, 4);
 	}
 	fout.write((char*)&block_size, 4);
 
 	fout.write((char*)&block_size, 4);
 	for (int i = 0; i < ATOM_COUNT; ++i) {
-		float y = (float)(*coordinates)(i, 1);
+		float y = (float)coordinates(i, 1);
 		fout.write((char*)&y, 4);
 	}
 	fout.write((char*)&block_size, 4);
 
 	fout.write((char*)&block_size, 4);
 	for (int i = 0; i < ATOM_COUNT; ++i) {
-		float z = (float)(*coordinates)(i, 2);
+		float z = (float)coordinates(i, 2);
 		fout.write((char*)&z, 4);
 	}
 	fout.write((char*)&block_size, 4);
