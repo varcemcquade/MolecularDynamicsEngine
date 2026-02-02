@@ -33,17 +33,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10061493-0ba4-4f60-a211-95df920cb34c" name="Changes" comment="Added periodic boundary conditions. Removed direct potential manipulation. Removed Matrix class and added flattened arrays.">
-      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CMakePresets.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Matrix.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Box.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Box.cu" beforeDir="false" afterPath="$PROJECT_DIR$/Box.cu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Box.h" beforeDir="false" afterPath="$PROJECT_DIR$/Box.h" afterDir="false" />
+    <list default="true" id="10061493-0ba4-4f60-a211-95df920cb34c" name="Changes" comment="Created organizational folders.">
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/engine/Box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/source/Box.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/engine/Box.cu" beforeDir="false" afterPath="$PROJECT_DIR$/engine/source/Box.cu" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/engine/Box.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/source/Box.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/engine/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/source/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,18 +55,24 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "varcemcquade"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;varcemcquade&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/varcemcquade/MolecularDynamicsEngine",
-    "accountId": "8846ba4c-a7b2-4ddf-b812-9efb72ebd337"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/varcemcquade/MolecularDynamicsEngine&quot;,
+    &quot;accountId&quot;: &quot;8846ba4c-a7b2-4ddf-b812-9efb72ebd337&quot;
   }
-}]]></component>
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/source/engine/Box.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/source/engine/Box.cu" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/source/engine/Box.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/source/engine/main.cpp" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="0J6u6TXR" />
   </component>
@@ -96,12 +99,13 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "RunOnceActivity.west.config.association.type.startup.service": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Merging master",
+    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -113,13 +117,21 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\varce\CLionProjects\MolecularDynamicsEngine\engine\source" />
+      <recent name="C:\Users\varce\CLionProjects\MolecularDynamicsEngine\engine" />
+      <recent name="C:\Users\varce\CLionProjects\MolecularDynamicsEngine" />
+      <recent name="C:\Users\varce\CLionProjects\MolecularDynamicsEngine\source" />
+    </key>
+  </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="MolecularDynamicsEngine" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="MolecularDynamicsEngine" TARGET_NAME="MolecularDynamicsEngine" CONFIG_NAME="Debug-Visual Studio" RUN_TARGET_PROJECT_NAME="MolecularDynamicsEngine" RUN_TARGET_NAME="MolecularDynamicsEngine">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MolecularDynamicsEngine" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="MolecularDynamicsEngine" TARGET_NAME="MolecularDynamicsEngine" CONFIG_NAME="Debug-Visual Studio" RUN_TARGET_PROJECT_NAME="MolecularDynamicsEngine" RUN_TARGET_NAME="MolecularDynamicsEngine">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -136,7 +148,8 @@
       <workItem from="1769324284863" duration="10268000" />
       <workItem from="1769446880606" duration="16779000" />
       <workItem from="1769729118590" duration="1235000" />
-      <workItem from="1769905731292" duration="9151000" />
+      <workItem from="1769905731292" duration="11559000" />
+      <workItem from="1770066896534" duration="1082000" />
     </task>
     <task id="LOCAL-00001" summary="Added periodic boundary conditions. Removed direct potential manipulation. Removed Matrix class and added flattened arrays.">
       <option name="closed" value="true" />
@@ -154,7 +167,31 @@
       <option name="project" value="LOCAL" />
       <updated>1770051397768</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Created organizational folders.">
+      <option name="closed" value="true" />
+      <created>1770053854929</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1770053854929</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Created organizational folders.">
+      <option name="closed" value="true" />
+      <created>1770054097042</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1770054097042</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Created organizational folders.">
+      <option name="closed" value="true" />
+      <created>1770054123722</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770054123722</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,6 +204,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added periodic boundary conditions. Removed direct potential manipulation. Removed Matrix class and added flattened arrays." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added periodic boundary conditions. Removed direct potential manipulation. Removed Matrix class and added flattened arrays." />
+    <MESSAGE value="Created organizational folders." />
+    <option name="LAST_COMMIT_MESSAGE" value="Created organizational folders." />
   </component>
 </project>

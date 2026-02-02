@@ -1,24 +1,5 @@
-#include <string>
-#ifdef __INTELLISENSE__
-#define __global__
-#define __device__
-#define __host__
-
-struct dim3 {
-public:
-    int x;
-    int y;
-    int z;
-};
-
-dim3 blockIdx;
-dim3 blockDim;
-dim3 threadIdx;
-
-#endif
-
 #include <cuda_runtime.h>
-#include <cmath>
+//#include <cmath>
 
 __global__
 void UpdateForcesKernel(double* device_coordinates, double* device_forces, const int ATOM_COUNT,

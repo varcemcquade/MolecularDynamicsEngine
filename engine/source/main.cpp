@@ -13,7 +13,7 @@ int main() {
 	Box* box = new Box(isPeriodic);
 
 	double dt = 1e-15;
-	int steps = 15000;
+	int steps = 100000;
 	int nsavc = 100;
 
 	box->DisplayCoordinates();
