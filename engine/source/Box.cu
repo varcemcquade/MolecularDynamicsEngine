@@ -1,5 +1,4 @@
 #include <cuda_runtime.h>
-//#include <cmath>
 
 __global__
 void UpdateForcesKernel(double* device_coordinates, double* device_forces, const int ATOM_COUNT,

@@ -16,11 +16,8 @@ int main() {
 	int steps = 100000;
 	int nsavc = 100;
 
-	box->DisplayCoordinates();
 	box->WritePDB("initial.pdb");
 	box->Equilibrate(steps, dt, "trajectory.dcd", nsavc);
-
-	box->DisplayCoordinates();
 	box->WritePDB("final.pdb");
 
 	cout << "DCD file size: " << filesystem::file_size("trajectory.dcd") << " bytes" << endl;
