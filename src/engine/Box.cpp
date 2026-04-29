@@ -314,7 +314,7 @@ double Box::ComputePressure() const {
 	double NkBT = Box::ATOM_COUNT * Box::KB * ComputeTemperature();
 	double volume_m3 = volume_angstroms3 * 1e-30;
 
-	return (NkBT / volume_m3) + (virial * 1e-20) / (3.0 * volume_m3); 	// Convert Angstroms^3 to m^3 for SI pressure (Pa)
+	return (NkBT / volume_m3) + (virial * 1e-20) / (3.0 * volume_m3); // Convert Angstroms^3 to m^3 for SI pressure (Pa)
 }
 
 void Box::MeanSquaredDisplacement(const string& out_file, int step) const {

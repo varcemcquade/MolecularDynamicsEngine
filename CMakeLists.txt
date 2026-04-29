@@ -15,10 +15,10 @@ project ("MolecularDynamicsEngine" LANGUAGES CXX CUDA)
 find_package(CUDAToolkit REQUIRED)
 
 add_executable (MolecularDynamicsEngine
-	"source/engine/main.cpp"
-	"source/engine/Box.h"
-	"source/engine/Box.cpp"
-	"source/engine/Box.cu"
+	"src/engine/main.cpp"
+    "src/engine/Box.h"
+    "src/engine/Box.cpp"
+    "src/engine/Box.cu"
 )
 
 target_link_libraries(MolecularDynamicsEngine CUDA::cudart)
