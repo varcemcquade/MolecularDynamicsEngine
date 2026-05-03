@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <fstream>
 #include <random>
 #include <chrono>
 #include <cmath>
@@ -47,7 +48,7 @@ public:
 	void UpdateForces();
 	void UpdateForcesCPU();
 	void Integrate(const double dt);
-	void Equilibrate(int steps, double dt, const string& dcd_file, int save_freq, const string& log_file);
+	void Equilibrate(int steps, double dt, const string& dcd_file, int save_freq, const string& log_file, const string& msd_file);
 
 	void DisplayCoordinates() const;
 	void DisplayVelocities() const;
@@ -60,7 +61,7 @@ public:
 	double ComputePressure() const;
 	void StaticStructureFactor() const;
 	void Relation() const;
-	void MeanSquaredDisplacement(const string& out_file, int step) const;
+	void MeanSquaredDisplacement(ofstream& out, int step) const;
 
 	void WritePDB(const string& file_name) const;
 	void WriteDCDHeader(const string& file_name, int total_frames, double dt);
