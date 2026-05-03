@@ -2,6 +2,8 @@
 
 Simple MD simulation engine using Velocity-Verlet integrator in C++/CUDA with Python analysis scripts.
 
+Configuring nvcc and CUDA Toolkit have proven to be a non-trivial task. This is not a neovim resignation -- I've simply offloaded compilation and execution woes onto VS Code for this project. 
+
 Requirements:
 
 - MSVC (Visual Studio 2022+)
