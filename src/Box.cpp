@@ -189,11 +189,13 @@ void Box::Integrate(const double dt) {
 	}
 }
 
-void Box::Equilibrate(int steps, double dt, const string& dcd_file, int save_freq, const string& log_file) {
+void Box::Equilibrate(int steps, double dt, const string& dcd_file, int save_freq, const string& log_file, const string& msd_file) {
 	WriteDCDHeader(dcd_file, steps / save_freq, dt);
 
 	ofstream log(log_file);
+	ofstream msd_out(msd_file);
 	log << "step,KE,PE,E_total,Temperature\n";
+	msd_out << "step,MSD\n";
 
 	for (int i = 0; i < steps; ++i) {
 		Integrate(dt);
@@ -209,10 +211,13 @@ void Box::Equilibrate(int steps, double dt, const string& dcd_file, int save_fre
 			double ETOT = KE + PE;
 			double T = ComputeTemperature();
 			log << i << "," << KE << "," << PE << "," << ETOT << "," << T << "\n";
+
+			MeanSquaredDisplacement(msd_out, i);
 		}
 	}
 
 	log.close();
+	msd_out.close();
 }
 
 void Box::DisplayCoordinates() const {
@@ -277,7 +282,7 @@ double Box::ComputeTotalEnergy() const {
 }
 
 double Box::ComputeTemperature() const {
-	return (2.0 * ComputeTotalKineticEnergy()) / (3.0 * Box::ATOM_COUNT * Box::KB);
+	return (2.0 * ComputeTotalKineticEnergy() * 1e-20) / (3.0 * Box::ATOM_COUNT * Box::KB);
 }
 
 double Box::ComputePressure() const {
@@ -317,7 +322,7 @@ double Box::ComputePressure() const {
 	return (NkBT / volume_m3) + (virial * 1e-20) / (3.0 * volume_m3); // Convert Angstroms^3 to m^3 for SI pressure (Pa)
 }
 
-void Box::MeanSquaredDisplacement(const string& out_file, int step) const {
+void Box::MeanSquaredDisplacement(ofstream& out, int step) const {
 	double msd = 0.0;
 	for (int i = 0; i < Box::ATOM_COUNT; ++i) {
 		for (int d = 0; d < Box::DIMENSION; ++d) {
@@ -326,10 +331,7 @@ void Box::MeanSquaredDisplacement(const string& out_file, int step) const {
 		}
 	}
 	msd /= Box::ATOM_COUNT;
-
-	ofstream fout(out_file, ios::app);
-	fout << step << "," << msd << "\n";
-	fout.close();
+	out << step << "," << msd << "\n";
 }
 
 void Box::StaticStructureFactor() const {}

@@ -8,7 +8,7 @@ void ComputeForcesKernel(double* device_coordinates, double* device_forces, cons
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= ATOM_COUNT) { return; }
 
-    device_forces[i * 3]     = 0;
+    device_forces[i * 3] = 0;
     device_forces[i * 3 + 1] = 0;
     device_forces[i * 3 + 2] = 0;
 
@@ -16,8 +16,8 @@ void ComputeForcesKernel(double* device_coordinates, double* device_forces, cons
     double yi = device_coordinates[i * 3 + 1];
     double zi = device_coordinates[i * 3 + 2];
 
-    double SIGMA3  = SIGMA * SIGMA * SIGMA;
-    double SIGMA6  = SIGMA3 * SIGMA3;
+    double SIGMA3 = SIGMA * SIGMA * SIGMA;
+    double SIGMA6 = SIGMA3 * SIGMA3;
     double SIGMA12 = SIGMA6 * SIGMA6;
 
     for (int j = 0; j < ATOM_COUNT; ++j) {
@@ -34,18 +34,18 @@ void ComputeForcesKernel(double* device_coordinates, double* device_forces, cons
         }
 
         double r2 = dx * dx + dy * dy + dz * dz;
-        double r  = sqrt(r2);
+        double r = sqrt(r2);
 
         if (r > CUTOFF_RANGE) { continue; }
 
-        double r6  = r2 * r2 * r2;
-        double r8  = r6 * r2;
+        double r6 = r2 * r2 * r2;
+        double r8 = r6 * r2;
         double r14 = r8 * r6;
 
-        double u        = ((6 * SIGMA6) / r8) - ((12 * SIGMA12) / r14);
+        double u = ((6 * SIGMA6) / r8) - ((12 * SIGMA12) / r14);
         double scalar_f = -4 * EPSILON_ANGSTROMS * u;
 
-        device_forces[i * 3]     += scalar_f * dx;
+        device_forces[i * 3] += scalar_f * dx;
         device_forces[i * 3 + 1] += scalar_f * dy;
         device_forces[i * 3 + 2] += scalar_f * dz;
     }
@@ -74,7 +74,7 @@ extern "C" void UpdateForcesGPU(double* device_coordinates, double* device_force
     int size_in_bytes = 3 * ATOM_COUNT * sizeof(double);
 
     cudaMemcpy(device_coordinates, host_coordinates, size_in_bytes, cudaMemcpyHostToDevice);
-    cudaMemcpy(device_forces,      host_forces,      size_in_bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(device_forces, host_forces, size_in_bytes, cudaMemcpyHostToDevice);
 
     ComputeForcesKernel<<<blocks, threads>>>(device_coordinates, device_forces, ATOM_COUNT,
                                              EPSILON_ANGSTROMS, SIGMA,
@@ -83,5 +83,5 @@ extern "C" void UpdateForcesGPU(double* device_coordinates, double* device_force
 
     cudaDeviceSynchronize();
     cudaMemcpy(host_coordinates, device_coordinates, size_in_bytes, cudaMemcpyDeviceToHost);
-    cudaMemcpy(host_forces,      device_forces,      size_in_bytes, cudaMemcpyDeviceToHost);
+    cudaMemcpy(host_forces, device_forces, size_in_bytes, cudaMemcpyDeviceToHost);
 }
